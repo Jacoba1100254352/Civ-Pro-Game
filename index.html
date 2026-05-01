@@ -1,0 +1,104 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Civ Pro: Trial Ready</title>
+    <link rel="stylesheet" href="styles.css">
+  </head>
+  <body>
+    <main class="app-shell">
+      <header class="topbar">
+        <div>
+          <p class="eyeline">1L Civil Procedure Card Game</p>
+          <h1>Civ Pro: Trial Ready</h1>
+        </div>
+        <div class="scoreboard" aria-label="Scoreboard">
+          <div class="score-card">
+            <span id="player-one-label">Player 1</span>
+            <strong id="player-one-score">0</strong>
+          </div>
+          <div class="timer-card" id="timer-card">
+            <span id="timer-label">No deadline</span>
+            <strong id="timer-value">--</strong>
+          </div>
+          <div class="score-card">
+            <span id="player-two-label">Player 2</span>
+            <strong id="player-two-score">0</strong>
+          </div>
+        </div>
+        <div class="topbar-actions">
+          <label class="toggle">
+            <input id="study-mode" type="checkbox">
+            <span>Study mode</span>
+          </label>
+          <button id="new-game-button" class="button secondary">New game</button>
+        </div>
+      </header>
+
+      <section class="game-layout" aria-label="Game table">
+        <aside class="phase-rail" aria-label="Litigation phases">
+          <ol id="phase-list"></ol>
+          <div class="round-card">
+            <span>Round</span>
+            <strong id="round-value">1</strong>
+            <p id="roles-value"></p>
+          </div>
+        </aside>
+
+        <section class="table-space">
+          <div class="case-strip">
+            <div>
+              <span class="section-label">Claim hand</span>
+              <h2>Choose a case to file</h2>
+            </div>
+            <div id="claim-hand" class="card-row"></div>
+          </div>
+
+          <article class="active-case" id="active-case" aria-live="polite"></article>
+
+          <section class="action-zones">
+            <div class="zone defense-zone">
+              <div class="zone-heading">
+                <span class="section-label">Defense</span>
+                <h2>Attack cards</h2>
+              </div>
+              <div id="attack-hand" class="card-grid"></div>
+            </div>
+
+            <div class="zone plaintiff-zone">
+              <div class="zone-heading">
+                <span class="section-label">Plaintiff</span>
+                <h2>Motion and discovery cards</h2>
+              </div>
+              <div id="motion-hand" class="card-grid"></div>
+            </div>
+          </section>
+
+          <section class="discovery-board">
+            <div>
+              <span class="section-label">Discovery checklist</span>
+              <h2>Build the record before summary judgment</h2>
+            </div>
+            <div id="discovery-list" class="evidence-list"></div>
+          </section>
+        </section>
+
+        <aside class="judge-panel" aria-label="Rule Judge">
+          <div class="panel-heading">
+            <span class="section-label">Rule Judge</span>
+            <h2>Current ruling</h2>
+          </div>
+          <div id="judge-output" class="judge-output"></div>
+          <div class="panel-heading sources-heading">
+            <span class="section-label">Verified hooks</span>
+            <h2>Doctrine in play</h2>
+          </div>
+          <ul id="source-list" class="source-list"></ul>
+        </aside>
+      </section>
+    </main>
+
+    <script src="app.js"></script>
+  </body>
+</html>
