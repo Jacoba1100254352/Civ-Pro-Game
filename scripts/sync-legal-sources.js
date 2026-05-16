@@ -13,34 +13,61 @@ if (process.argv[1] && import.meta.url === pathToFileURL(process.argv[1]).href) 
   await main();
 }
 
-export async function main(argv = process.argv.slice(2), runtimeEnv = mergedEnv()) {
+export async function main(argv = process.argv.slice(2), runtimeEnv = null) {
   const args = new Set(argv);
   const live = args.has("--live");
-  const outputDir = path.resolve(runtimeEnv.LEGAL_SOURCE_CACHE_DIR || "data/legal-sources");
-  const manifestPath = path.join(outputDir, "source-manifest.json");
-  const generatedModulePath = path.resolve("legal-sources.generated.js");
-  const manifest = await buildManifest({ env: runtimeEnv, live });
+  const localOutput = args.has("--local-output");
+  const includeRestricted = args.has("--include-restricted");
+  const env = runtimeEnv || (args.has("--ignore-env") ? publicCatalogEnv() : mergedEnv());
+  const outputDir = path.resolve(env.LEGAL_SOURCE_CACHE_DIR || "data/legal-sources");
+  const manifestPath = localOutput
+    ? path.join(outputDir, "live-source-manifest.local.json")
+    : path.join(outputDir, "source-manifest.json");
+  const generatedModulePath = localOutput ? null : path.resolve("legal-sources.generated.js");
+  const manifest = await buildManifest({ env, live, includeRestricted });
 
   writeOutputs(manifest, { outputDir, manifestPath, generatedModulePath });
   printSummary(manifest, { manifestPath, generatedModulePath });
 }
 
-export async function buildManifest({ env, live }) {
-  const providers = SOURCE_PROVIDERS.map((provider) => ({
-    ...provider,
-    configured: provider.envKeys.every((key) => hasValue(env, key)),
-    missingEnv: provider.envKeys.filter((key) => !hasValue(env, key))
-  }));
+function publicCatalogEnv() {
+  return {
+    LEGAL_SOURCE_CACHE_DIR: process.env.LEGAL_SOURCE_CACHE_DIR || "data/legal-sources"
+  };
+}
+
+export async function buildManifest({ env, live, includeRestricted = false }) {
+  const providerStatuses = new Map();
+  for (const provider of SOURCE_PROVIDERS) {
+    providerStatuses.set(provider.id, provider.envKeys.every((key) => hasValue(env, key)));
+  }
 
   const probes = [];
   for (const probe of LIVE_PROBES) {
-    probes.push(await buildProbeStatus(probe, env, live));
+    probes.push(await buildProbeStatus(probe, env, live, { includeRestricted }));
   }
+
+  for (const probe of probes) {
+    if (probe.configured) {
+      providerStatuses.set(probe.provider, true);
+    }
+  }
+
+  const providers = SOURCE_PROVIDERS.map((provider) => {
+    const configured = providerStatuses.get(provider.id) || false;
+    return {
+      ...provider,
+      configured,
+      missingEnv: configured ? [] : provider.envKeys.filter((key) => !hasValue(env, key))
+    };
+  });
 
   return {
     schemaVersion: 1,
     generatedAt: new Date().toISOString(),
     live,
+    includeRestricted,
+    outputMode: live ? "live-probe" : "catalog",
     requiredEnv: REQUIRED_ENV_KEYS,
     providers,
     doctrineSources: DOCTRINE_SOURCES,
@@ -49,7 +76,8 @@ export async function buildManifest({ env, live }) {
   };
 }
 
-export async function buildProbeStatus(probe, env, live) {
+export async function buildProbeStatus(probe, env, live, options = {}) {
+  const { includeRestricted = false } = options;
   const missingEnv = probe.envKeys.filter((key) => !hasValue(env, key));
   const request = buildRequest(probe, env);
 
@@ -59,6 +87,7 @@ export async function buildProbeStatus(probe, env, live) {
     label: probe.label,
     gameUse: probe.gameUse,
     liveEnabled: live,
+    restricted: Boolean(probe.restricted),
     configured: missingEnv.length === 0,
     missingEnv,
     request: {
@@ -81,6 +110,22 @@ export async function buildProbeStatus(probe, env, live) {
       ...base,
       status: "skipped",
       note: `Missing ${missingEnv.join(", ")}.`
+    };
+  }
+
+  if (probe.restricted && !includeRestricted) {
+    return {
+      ...base,
+      status: "restricted",
+      note: "Credentials are present, but direct restricted-source access is disabled by default."
+    };
+  }
+
+  if (probe.method === "MANUAL") {
+    return {
+      ...base,
+      status: "configured",
+      note: "Credentials are present. No network request was made for this restricted account source."
     };
   }
 
@@ -161,7 +206,9 @@ export function buildSourceCards(providers) {
 export function writeOutputs(manifest, { outputDir, manifestPath, generatedModulePath }) {
   fs.mkdirSync(outputDir, { recursive: true });
   fs.writeFileSync(manifestPath, `${JSON.stringify(manifest, null, 2)}\n`);
-  fs.writeFileSync(generatedModulePath, buildGeneratedModule(manifest));
+  if (generatedModulePath) {
+    fs.writeFileSync(generatedModulePath, buildGeneratedModule(manifest));
+  }
 }
 
 export function buildGeneratedModule(manifest) {
@@ -180,7 +227,11 @@ export function printSummary(manifest, { manifestPath, generatedModulePath }) {
     .join(", ");
 
   console.log(`Legal source manifest written to ${path.relative(process.cwd(), manifestPath)}`);
-  console.log(`Generated browser module written to ${path.relative(process.cwd(), generatedModulePath)}`);
+  if (generatedModulePath) {
+    console.log(`Generated browser module written to ${path.relative(process.cwd(), generatedModulePath)}`);
+  } else {
+    console.log("Generated browser module left unchanged for local live probe.");
+  }
   console.log(`Providers configured: ${configured}/${total}`);
   console.log(`Probes: ${probeSummary}`);
 }

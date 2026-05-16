@@ -1,7 +1,9 @@
 {
   "schemaVersion": 1,
-  "generatedAt": "2026-05-09T13:17:50.918Z",
+  "generatedAt": "2026-05-16T22:11:14.621Z",
   "live": false,
+  "includeRestricted": false,
+  "outputMode": "catalog",
   "requiredEnv": [
     {
       "key": "GOVINFO_API_KEY",
@@ -333,6 +335,7 @@
       "label": "CourtListener Rule 12 opinion search",
       "gameUse": "Seed real-world motion-to-dismiss example fact patterns.",
       "liveEnabled": false,
+      "restricted": false,
       "configured": false,
       "missingEnv": [
         "COURTLISTENER_API_TOKEN"
@@ -353,6 +356,7 @@
       "label": "govinfo U.S. Code collection probe",
       "gameUse": "Verify official U.S. Code package access before statute ingestion.",
       "liveEnabled": false,
+      "restricted": false,
       "configured": false,
       "missingEnv": [
         "GOVINFO_API_KEY"
@@ -371,6 +375,7 @@
       "label": "Federal Register civil procedure document probe",
       "gameUse": "Find rulemaking context and amendment notices.",
       "liveEnabled": false,
+      "restricted": false,
       "configured": true,
       "missingEnv": [],
       "request": {
@@ -387,6 +392,7 @@
       "label": "eCFR title index probe",
       "gameUse": "Verify public CFR metadata access for future regulation cards.",
       "liveEnabled": false,
+      "restricted": false,
       "configured": true,
       "missingEnv": [],
       "request": {
@@ -403,6 +409,7 @@
       "label": "Congress.gov recent bill probe",
       "gameUse": "Verify legislative metadata access for statutory-update modules.",
       "liveEnabled": false,
+      "restricted": false,
       "configured": false,
       "missingEnv": [
         "CONGRESS_API_KEY"
@@ -421,6 +428,7 @@
       "label": "Open States jurisdiction probe",
       "gameUse": "Verify state-legislative metadata access for state-court expansions.",
       "liveEnabled": false,
+      "restricted": false,
       "configured": false,
       "missingEnv": [
         "OPENSTATES_API_KEY"
@@ -431,6 +439,26 @@
         "headers": {
           "X-API-KEY": "<redacted>"
         }
+      },
+      "status": "cataloged",
+      "note": "Run npm run sources:live to probe this source."
+    },
+    {
+      "id": "pacer-account-config",
+      "provider": "pacer",
+      "label": "PACER account configuration check",
+      "gameUse": "Confirm PACER account fields are present without performing direct PACER access.",
+      "liveEnabled": false,
+      "restricted": true,
+      "configured": false,
+      "missingEnv": [
+        "PACER_USERNAME",
+        "PACER_PASSWORD"
+      ],
+      "request": {
+        "method": "MANUAL",
+        "url": "https://pacer.uscourts.gov/",
+        "headers": {}
       },
       "status": "cataloged",
       "note": "Run npm run sources:live to probe this source."

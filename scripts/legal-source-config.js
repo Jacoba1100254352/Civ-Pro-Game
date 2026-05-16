@@ -366,5 +366,16 @@ export const LIVE_PROBES = [
       "X-API-KEY": "${OPENSTATES_API_KEY}"
     },
     gameUse: "Verify state-legislative metadata access for state-court expansions."
+  },
+  {
+    id: "pacer-account-config",
+    provider: "pacer",
+    label: "PACER account configuration check",
+    envKeys: ["PACER_USERNAME", "PACER_PASSWORD"],
+    method: "MANUAL",
+    url: "https://pacer.uscourts.gov/",
+    query: {},
+    restricted: true,
+    gameUse: "Confirm PACER account fields are present without performing direct PACER access."
   }
 ];

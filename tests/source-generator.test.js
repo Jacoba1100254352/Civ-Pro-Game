@@ -49,6 +49,13 @@ const fakeEnv = {
 const configuredManifest = await buildManifest({ env: fakeEnv, live: false });
 expect(configuredManifest.providers.every((provider) => provider.configured), "All providers should configure when fake keys are supplied.");
 
+const pacerProbe = LIVE_PROBES.find((probe) => probe.provider === "pacer");
+const restrictedPacerProbe = await buildProbeStatus(pacerProbe, fakeEnv, true);
+expect(restrictedPacerProbe.status === "restricted", "PACER probe should not perform restricted access by default.");
+const includedPacerProbe = await buildProbeStatus(pacerProbe, fakeEnv, true, { includeRestricted: true });
+expect(includedPacerProbe.status === "configured", "PACER restricted probe should confirm credentials when explicitly included.");
+expect(includedPacerProbe.request.method === "MANUAL", "PACER restricted probe should remain a manual no-network check.");
+
 const courtListenerProbe = LIVE_PROBES.find((probe) => probe.provider === "courtlistener");
 const request = buildRequest(courtListenerProbe, fakeEnv);
 expect(request.headers.Authorization === "Token fake-courtlistener-token", "CourtListener request should interpolate token for runtime fetch.");

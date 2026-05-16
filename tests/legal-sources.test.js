@@ -45,6 +45,10 @@ if (!LEGAL_SOURCE_MANIFEST.liveProbes.some((probe) => probe.provider === "courtl
   failures.push("CourtListener live probe is not configured.");
 }
 
+if (!LEGAL_SOURCE_MANIFEST.liveProbes.some((probe) => probe.provider === "pacer" && probe.restricted)) {
+  failures.push("Restricted PACER account probe is not configured.");
+}
+
 const manifestText = JSON.stringify(LEGAL_SOURCE_MANIFEST);
 if (/COURTLISTENER_API_TOKEN=|GOVINFO_API_KEY=|CONGRESS_API_KEY=|OPENSTATES_API_KEY=/.test(manifestText)) {
   failures.push("Manifest includes raw .env assignment text.");

@@ -34,11 +34,15 @@ That command writes:
 - `data/legal-sources/source-manifest.json`: provider registry, doctrine source links, and live-probe configuration.
 - `legal-sources.generated.js`: browser-safe source cards used by the in-game Rule Judge.
 
+`npm run sources` intentionally ignores local credentials so the checked-in catalog stays stable and safe to commit.
+
 To probe live APIs and public endpoints, copy `.env.example` to `.env`, add real credentials locally, and run:
 
 ```sh
 npm run sources:live
 ```
+
+That writes `data/legal-sources/live-source-manifest.local.json`, which is ignored by git. Use `npm run sources:live:restricted` to include restricted account checks such as PACER credential presence. Direct PACER network access is not performed by this prototype.
 
 `.env` is local-only and ignored by git. `.env.example` is the tracked template. Current placeholders are `GOVINFO_API_KEY`, `COURTLISTENER_API_TOKEN`, `CONGRESS_API_KEY`, `OPENSTATES_API_KEY`, `PACER_USERNAME`, and `PACER_PASSWORD`.
 
