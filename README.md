@@ -1,68 +1,87 @@
 # Civ Pro: Trial Ready
 
-`Civ Pro: Trial Ready` is a playable first-pass prototype for a competitive 1L Civil Procedure card game. It is built as a dependency-free browser app so it can be opened directly or converted later into a React/Vite multiplayer app.
+`Civ Pro: Trial Ready` is a dependency-light browser prototype for a competitive 1L Civil Procedure card game. Version 0.2 turns the first proof of concept into a more usable game system: decks, hands, draw/discard, litigation budget, tutorial mode, printable cards, professor settings, and automated doctrine tests.
 
 ## Run
 
-Open `index.html` in a browser.
-
-If you prefer a local server:
+Because the app is now split into browser modules, run it from a local server:
 
 ```sh
-python3 -m http.server 4173
+npm run serve
 ```
 
 Then open `http://localhost:4173`.
 
-## Game Shape
+## Test
 
-The prototype uses a hot-seat competitive format.
+```sh
+npm test
+npm run check
+```
 
-- One player files a claim and chooses the defendant.
-- The other player can play threshold attack cards: personal jurisdiction, subject-matter jurisdiction, venue, removal, local-party joinder, and Rule 12(b)(6).
-- The plaintiff must answer with a matching motion before the timer runs out.
-- Surviving claims move into discovery.
-- The plaintiff must collect the claim-specific proof checklist using the right discovery tools.
-- The defense can close with summary judgment if the record is incomplete.
-- A claim that survives and has a complete record scores as trial ready.
+The test suite covers rule-engine doctrine branches and edge cases, playable card/deck integrity, generated legal-source data, source generator/env parsing behavior, secret redaction, the static HTML-to-app DOM contract, and a dependency-free app boot smoke test.
 
-## Verified Doctrine Hooks
+## Legal Source Imports
 
-The rule engine intentionally abstracts doctrine rather than pretending to be a full legal simulator. The first edition uses these verified hooks:
+The app now has a legal-source ingestion layer. It does not need API credentials to run; the default source catalog is generated from public doctrine/source metadata and blank credential placeholders.
 
-- FRCP 12(b) and 12(h): threshold defenses and waiver timing.
-- 28 U.S.C. 1332: diversity jurisdiction requires citizenship diversity and more than $75,000 in controversy.
-- 28 U.S.C. 1441: removal requires original federal jurisdiction and diversity removal can be blocked by a properly joined forum defendant.
-- FRCP 26, 30, 34, and 37: discovery scope, depositions, document production, and motions to compel.
-- FRCP 56: summary judgment depends on whether the record contains evidence for the required elements.
+```sh
+npm run sources
+```
 
-## Why a Web Card Game
+That command writes:
 
-A card-game model is the best first format because it preserves the original idea and can later become either a physical deck or a digital multiplayer system. The app keeps the core parts separate:
+- `data/legal-sources/source-manifest.json`: provider registry, doctrine source links, and live-probe configuration.
+- `legal-sources.generated.js`: browser-safe source cards used by the in-game Rule Judge.
 
-- Case facts are data.
-- Attack and motion cards are data.
-- Rule checking is concentrated in `app.js`.
-- The UI is only HTML/CSS/JS.
+To probe live APIs and public endpoints, add real credentials to `.env.local` and run:
 
-That keeps future work practical: add a larger case library, add professor-specific rule decks, add multiplayer, or print cards from the same data model.
+```sh
+npm run sources:live
+```
 
-## Market Check
+The tracked `.env` intentionally contains blank placeholders only. Use `.env.local` for real values; it is ignored by git. Current placeholders are `GOVINFO_API_KEY`, `COURTLISTENER_API_TOKEN`, `CONGRESS_API_KEY`, `OPENSTATES_API_KEY`, `PACER_USERNAME`, and `PACER_PASSWORD`.
 
-Quick verification found law-themed card and board games, legal trivia games, civil-rights/case-law card games, and small Civ Pro gamification experiments, but not an established strategic 1L Civil Procedure card game covering jurisdiction, removal, Rule 12 timing, discovery, and summary judgment as one integrated product.
+Source coverage currently includes U.S. Courts FRCP materials, Cornell LII rule/statute pages, CourtListener, govinfo, FederalRegister.gov, eCFR, Congress.gov, Open States, and a restricted PACER/RECAP path. Direct PACER use should stay server-side and optional because it can require account credentials and may incur fees.
 
-Useful comparators:
+## What Is Playable
 
-- `Civ Pro the Gathering` shows that students already see FRCP rules as trading-card-like mechanics.
-- Law-themed games such as `CIVIO`, `Disbarred`, `The Game of Law School`, and `Uncivil Litigation` show the broader market, but they are not this specific Civ Pro pretrial-procedure system.
-- The incomplete Civ Pro board-game/flowchart space suggests student interest in turning jurisdiction rules into play.
+- File a case and choose the defendant.
+- Use an actual defense attack hand and plaintiff motion/discovery hand.
+- Draw cards, discard used cards, and spend limited litigation budget.
+- Play threshold attacks for personal jurisdiction, subject-matter jurisdiction, service, venue, removal, joinder, supplemental jurisdiction, Erie preview, Rule 12(b)(6), and class certification preview.
+- Use timed or untimed motion responses.
+- Collect discovery proof with depositions, requests for production, requests for admission, expert proof, motions to compel, narrowing, and privilege-log responses.
+- Close discovery and use Rule 56 if the proof checklist is incomplete.
+- Score trial-ready claims and rotate roles.
 
-## Next Product Steps
+## Study Modes
 
-The next sensible version would add:
+The professor panel supports:
 
-- A printable card export from the same case/card data.
-- More precise Rule 12 waiver sequencing.
-- Supplemental jurisdiction and claim/party joinder modules.
-- A professor mode that toggles topics on or off.
-- Multiplayer state sync for two students on different devices.
+- Jurisdiction-only preset.
+- Discovery-only preset.
+- Topic toggles for jurisdiction/removal, service, joinder, supplemental jurisdiction, discovery/Rule 56, Erie preview, and class actions preview.
+- No-timer mode.
+- Exam mode, which hides the Rule Judge analysis until revealed.
+- Explanation toggle.
+- Guided tutorial mode.
+
+## Print Cards
+
+Use `Print cards` in the app. The print view is generated from the same data model used by the game so the physical deck and digital prototype stay aligned.
+
+## File Structure
+
+- `data.js`: case cards, attack cards, motion/discovery cards, topic modules, sources, tutorial steps.
+- `legal-sources.generated.js`: generated browser-safe source module used by `data.js`.
+- `rules.js`: rule evaluation and shared helpers.
+- `app.js`: UI state, turns, rendering, hands, budget, tutorial, printing.
+- `rule-tests.js`: reusable test assertions.
+- `scripts/`: legal-source configuration, env loading, and source-manifest generation.
+- `tests/`: Node test runners for doctrine logic and source ingestion.
+- `styles.css`: game UI and print-card styling.
+
+## Doctrine Boundary
+
+This is still a learning game, not a legal expert system. It intentionally abstracts doctrine into teachable game states. The source hooks are grounded in core 1L procedure materials, including FRCP 4, 8, 12-15, 18-20, 23, 26/30/34/36/37, 56, and 28 U.S.C. 1331, 1332, 1367, 1391, 1441, and 1446.

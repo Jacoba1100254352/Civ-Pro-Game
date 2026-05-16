@@ -65,14 +65,15 @@ a {
 }
 
 .app-shell {
-  width: min(100%, 1520px);
+  width: auto;
+  max-width: 1520px;
   margin: 0 auto;
   padding: 20px;
 }
 
 .topbar {
   display: grid;
-  grid-template-columns: minmax(230px, 1fr) auto minmax(220px, auto);
+  grid-template-columns: minmax(230px, 1fr) auto minmax(360px, auto);
   gap: 18px;
   align-items: center;
   padding: 16px 18px;
@@ -81,6 +82,12 @@ a {
   border-radius: var(--radius);
   box-shadow: var(--shadow);
   backdrop-filter: blur(10px);
+}
+
+.topbar > *,
+.scoreboard,
+.topbar-actions {
+  min-width: 0;
 }
 
 .eyeline,
@@ -170,6 +177,7 @@ h3 {
 
 .topbar-actions {
   display: flex;
+  flex-wrap: wrap;
   justify-content: flex-end;
   align-items: center;
   gap: 12px;
@@ -183,6 +191,13 @@ h3 {
   font-size: 0.9rem;
   font-weight: 700;
   white-space: nowrap;
+}
+
+.toggle.small {
+  align-items: flex-start;
+  white-space: normal;
+  font-size: 0.78rem;
+  line-height: 1.25;
 }
 
 .toggle input {
@@ -247,7 +262,9 @@ h3 {
 .case-strip,
 .active-case,
 .zone,
-.discovery-board {
+.discovery-board,
+.settings-card,
+.tutorial-panel {
   background: rgba(255, 254, 250, 0.92);
   border: 1px solid var(--line);
   border-radius: var(--radius);
@@ -309,6 +326,71 @@ h3 {
   margin: 8px 0 0;
   color: var(--muted);
   font-size: 0.82rem;
+}
+
+.resource-panel {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 8px;
+  margin: 12px 0;
+}
+
+.resource-card {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  padding: 9px;
+  background: var(--surface-strong);
+  border: 1px solid var(--line);
+  border-radius: 7px;
+}
+
+.resource-card span {
+  color: var(--muted);
+  font-size: 0.68rem;
+  font-weight: 900;
+  text-transform: uppercase;
+}
+
+.resource-card strong {
+  font-size: 1.15rem;
+}
+
+.settings-card,
+.tutorial-panel {
+  margin-top: 12px;
+  padding: 12px;
+}
+
+.settings-grid {
+  display: grid;
+  gap: 9px;
+}
+
+.preset-row {
+  display: grid;
+  gap: 8px;
+  margin: 10px 0 14px;
+}
+
+.preset-row .button {
+  width: 100%;
+}
+
+.tutorial-panel:empty {
+  display: none;
+}
+
+.tutorial-panel p {
+  margin-bottom: 8px;
+  color: var(--muted);
+  font-size: 0.82rem;
+}
+
+.tutorial-count {
+  color: var(--gold);
+  font-weight: 900;
 }
 
 .table-space {
@@ -554,7 +636,11 @@ h3 {
   display: flex;
   justify-content: space-between;
   gap: 12px;
-  align-items: baseline;
+  align-items: flex-start;
+}
+
+.zone-heading .button {
+  flex: 0 0 auto;
 }
 
 .evidence-list {
@@ -648,6 +734,46 @@ h3 {
   font-weight: 800;
 }
 
+.print-deck {
+  display: none;
+}
+
+.print-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 2.5in);
+  gap: 0.18in;
+}
+
+.print-card {
+  width: 2.5in;
+  min-height: 3.5in;
+  padding: 0.14in;
+  background: #fffdf7;
+  border: 1px solid #978d7d;
+  border-radius: 0.08in;
+  break-inside: avoid;
+}
+
+.print-card span {
+  color: var(--gold);
+  font-size: 0.11in;
+  font-weight: 900;
+  text-transform: uppercase;
+}
+
+.print-card h3 {
+  margin: 0.08in 0;
+  font-family: Georgia, "Times New Roman", serif;
+  font-size: 0.17in;
+}
+
+.print-card h4,
+.print-card p {
+  margin: 0 0 0.08in;
+  font-size: 0.105in;
+  line-height: 1.3;
+}
+
 @keyframes timerPulse {
   0%,
   100% {
@@ -685,6 +811,10 @@ h3 {
     grid-template-columns: repeat(3, minmax(0, 1fr));
   }
 
+  .resource-panel {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+
   .judge-panel {
     order: -1;
   }
@@ -703,12 +833,42 @@ h3 {
   .evidence-list,
   .case-facts dl,
   .status-grid,
-  .phase-rail ol {
+  .phase-rail ol,
+  .resource-panel {
     grid-template-columns: 1fr;
   }
 
   .scoreboard {
     gap: 8px;
+  }
+
+  .topbar-actions {
+    display: grid;
+    grid-template-columns: 1fr;
+    align-items: stretch;
+    gap: 10px;
+  }
+
+  .topbar-actions .toggle {
+    grid-column: 1 / -1;
+  }
+
+  .topbar-actions .button {
+    width: 100%;
+    min-width: 0;
+    padding-inline: 10px;
+  }
+
+  .table-space {
+    order: 1;
+  }
+
+  .phase-rail {
+    order: 2;
+  }
+
+  .judge-panel {
+    order: 3;
   }
 
   .score-card,
@@ -719,6 +879,33 @@ h3 {
   .playing-card,
   .evidence-item {
     min-height: auto;
+  }
+}
+
+@media print {
+  html,
+  body {
+    background: #ffffff;
+  }
+
+  .topbar,
+  .game-layout {
+    display: none !important;
+  }
+
+  .app-shell {
+    width: auto;
+    padding: 0;
+  }
+
+  .print-deck {
+    display: block;
+    padding: 0.2in;
+  }
+
+  .print-deck h1,
+  .print-deck h2 {
+    break-after: avoid;
   }
 }
 
