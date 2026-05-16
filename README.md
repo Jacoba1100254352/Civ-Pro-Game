@@ -34,13 +34,13 @@ That command writes:
 - `data/legal-sources/source-manifest.json`: provider registry, doctrine source links, and live-probe configuration.
 - `legal-sources.generated.js`: browser-safe source cards used by the in-game Rule Judge.
 
-To probe live APIs and public endpoints, add real credentials to `.env.local` and run:
+To probe live APIs and public endpoints, copy `.env.example` to `.env`, add real credentials locally, and run:
 
 ```sh
 npm run sources:live
 ```
 
-The tracked `.env` intentionally contains blank placeholders only. Use `.env.local` for real values; it is ignored by git. Current placeholders are `GOVINFO_API_KEY`, `COURTLISTENER_API_TOKEN`, `CONGRESS_API_KEY`, `OPENSTATES_API_KEY`, `PACER_USERNAME`, and `PACER_PASSWORD`.
+`.env` is local-only and ignored by git. `.env.example` is the tracked template. Current placeholders are `GOVINFO_API_KEY`, `COURTLISTENER_API_TOKEN`, `CONGRESS_API_KEY`, `OPENSTATES_API_KEY`, `PACER_USERNAME`, and `PACER_PASSWORD`.
 
 Source coverage currently includes U.S. Courts FRCP materials, Cornell LII rule/statute pages, CourtListener, govinfo, FederalRegister.gov, eCFR, Congress.gov, Open States, and a restricted PACER/RECAP path. Direct PACER use should stay server-side and optional because it can require account credentials and may incur fees.
 

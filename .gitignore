@@ -119,9 +119,10 @@ Network Trash Folder
 Temporary Items
 .apdisk
 
-# Local credential overrides. The tracked .env intentionally contains only blank placeholders.
-.env.local
-.env.*.local
+# Local environment and credential files. Keep .env.example tracked as the template.
+.env
+.env.*
+!.env.example
 
 # Optional live fetch cache produced by legal-source imports.
 data/legal-sources/cache/

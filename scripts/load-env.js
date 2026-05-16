@@ -31,8 +31,7 @@ export function loadEnv(filePath = ".env") {
 export function mergedEnv(filePath = ".env") {
   return {
     ...process.env,
-    ...withoutBlankValues(loadEnv(filePath)),
-    ...withoutBlankValues(loadEnv(".env.local"))
+    ...withoutBlankValues(loadEnv(filePath))
   };
 }
 
