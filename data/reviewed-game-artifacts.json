@@ -1,0 +1,192 @@
+{
+  "schemaVersion": 1,
+  "reviewedAt": "2026-05-17",
+  "reviewedBy": "human-review-required",
+  "reviewPolicy": "Live provider data may create candidate artifacts, but only artifacts in this reviewed file are compiled into the game.",
+  "cases": [
+    {
+      "id": "api-rule12-screening-report",
+      "reviewStatus": "reviewed",
+      "artifactType": "playable-case",
+      "sourceRefs": ["courtlistener-rule-12-search", "govinfo-uscode-collection"],
+      "reviewNotes": "Built from the CourtListener Rule 12 candidate lane and federal statutory jurisdiction source checks; facts are fictionalized for classroom use.",
+      "topics": ["jurisdiction", "discovery"],
+      "title": "Screening Report Pleading Fight",
+      "type": "Federal statutory claim",
+      "plaintiff": { "name": "Morgan Applicant", "state": "NY" },
+      "forumState": "NY",
+      "court": "federal",
+      "eventState": "NY",
+      "amount": 18000,
+      "federalQuestion": true,
+      "pleadingLevel": 1,
+      "serviceProper": true,
+      "venueFacts": "The job application, screening notice, and alleged denial occurred in New York.",
+      "summary": "An applicant brings a federal screening-report claim, but the complaint is thin on notice and causation facts.",
+      "defendants": [
+        {
+          "id": "screeningco",
+          "name": "ScreeningCo Data",
+          "state": "DE",
+          "ppb": "GA",
+          "contacts": ["NY", "GA", "DE"],
+          "role": "Prepared and sold the disputed screening report into New York.",
+          "sameTransaction": true
+        },
+        {
+          "id": "local-employer",
+          "name": "Hudson Hiring LLC",
+          "state": "NY",
+          "ppb": "NY",
+          "contacts": ["NY"],
+          "role": "Local employer alleged to have used the report in the hiring decision.",
+          "sameTransaction": true,
+          "forumDefendant": true
+        },
+        {
+          "id": "remote-data-vendor",
+          "name": "Lone Star Data Vendor",
+          "state": "TX",
+          "ppb": "TX",
+          "contacts": ["TX"],
+          "role": "Upstream data broker with no New York-facing contract in the case file.",
+          "sameTransaction": false
+        }
+      ],
+      "evidence": [
+        {
+          "id": "consumer-report-file",
+          "title": "Screening report file",
+          "tool": "rfp",
+          "description": "Request the report, notice packets, and audit trail.",
+          "resistance": "privacy"
+        },
+        {
+          "id": "adverse-action-depo",
+          "title": "Hiring manager deposition",
+          "tool": "deposition",
+          "description": "Tie the report to the adverse hiring decision."
+        },
+        {
+          "id": "notice-admission",
+          "title": "Notice admission",
+          "tool": "admission",
+          "description": "Narrow whether statutory notice was sent before the decision."
+        }
+      ]
+    },
+    {
+      "id": "api-removal-repair-shop",
+      "reviewStatus": "reviewed",
+      "artifactType": "playable-case",
+      "sourceRefs": ["govinfo-uscode-collection", "openstates-jurisdictions"],
+      "reviewNotes": "Built from federal removal/statutory source checks and state-expansion metadata; facts are fictionalized for classroom use.",
+      "topics": ["jurisdiction", "joinder", "discovery"],
+      "title": "Repair Shop Removal Trap",
+      "type": "State consumer protection",
+      "plaintiff": { "name": "Avery Owner", "state": "NJ" },
+      "forumState": "NJ",
+      "court": "state",
+      "eventState": "NJ",
+      "amount": 98000,
+      "federalQuestion": false,
+      "pleadingLevel": 2,
+      "serviceProper": true,
+      "venueFacts": "The repair, billing, and vehicle failure all happened in New Jersey.",
+      "summary": "A vehicle owner sues a national warranty company and a local repair shop after a failed repair and disputed warranty denial.",
+      "defendants": [
+        {
+          "id": "warrantyco",
+          "name": "WarrantyCo National",
+          "state": "DE",
+          "ppb": "TX",
+          "contacts": ["NJ", "TX", "DE"],
+          "role": "Administered warranty claims and authorized repairs nationwide, including New Jersey.",
+          "sameTransaction": true
+        },
+        {
+          "id": "shoreline-repair",
+          "name": "Shoreline Repair LLC",
+          "state": "NJ",
+          "ppb": "NJ",
+          "contacts": ["NJ"],
+          "role": "Local repair shop that performed the disputed work.",
+          "sameTransaction": true,
+          "forumDefendant": true
+        },
+        {
+          "id": "parts-supplier",
+          "name": "Buckeye Parts Supply",
+          "state": "OH",
+          "ppb": "OH",
+          "contacts": ["OH"],
+          "role": "Parts supplier with no direct New Jersey customer relationship in the case file.",
+          "sameTransaction": false
+        }
+      ],
+      "evidence": [
+        {
+          "id": "repair-invoices",
+          "title": "Repair invoices and warranty notes",
+          "tool": "rfp",
+          "description": "Collect claim notes, authorization records, and repair invoices."
+        },
+        {
+          "id": "shop-manager-depo",
+          "title": "Shop manager deposition",
+          "tool": "deposition",
+          "description": "Test the relationship between the local shop and warranty administrator."
+        },
+        {
+          "id": "defect-expert",
+          "title": "Mechanical expert report",
+          "tool": "expert",
+          "description": "Connect the failed repair to causation and amount in controversy."
+        }
+      ]
+    }
+  ],
+  "doctrineCards": [
+    {
+      "id": "reviewed-rule12-candidate-lane",
+      "reviewStatus": "reviewed",
+      "title": "CourtListener Rule 12 Candidate Lane",
+      "topic": "Rule 12 pleading practice",
+      "summary": "CourtListener searches are used to find motion-to-dismiss patterns that can be fictionalized into pleading-sufficiency game cases.",
+      "sourceRefs": ["courtlistener-rule-12-search"]
+    },
+    {
+      "id": "reviewed-removal-source-lane",
+      "reviewStatus": "reviewed",
+      "title": "Removal and Diversity Source Lane",
+      "topic": "Diversity and removal",
+      "summary": "govinfo source probes support statutory source checks for diversity, removal, and remand cards before reviewed cases enter the deck.",
+      "sourceRefs": ["govinfo-uscode-collection"]
+    },
+    {
+      "id": "reviewed-state-expansion-lane",
+      "reviewStatus": "reviewed",
+      "title": "State Expansion Candidate Lane",
+      "topic": "State procedure expansion",
+      "summary": "Open States metadata is treated as an expansion source for state-law and state-procedure modules, not as direct legal authority for federal Civ Pro rules.",
+      "sourceRefs": ["openstates-jurisdictions"]
+    }
+  ],
+  "sourceCards": [
+    {
+      "label": "Reviewed Artifact: Rule 12 Candidate Lane",
+      "href": "https://www.courtlistener.com/help/api/rest/",
+      "note": "Reviewed source lane for fictionalized pleading-sufficiency game cases derived from CourtListener candidates."
+    },
+    {
+      "label": "Reviewed Artifact: Removal Source Lane",
+      "href": "https://api.govinfo.gov/docs",
+      "note": "Reviewed source lane for federal removal and diversity gameplay artifacts."
+    },
+    {
+      "label": "Reviewed Artifact: State Expansion Lane",
+      "href": "https://docs.openstates.org/api-v3/",
+      "note": "Reviewed source lane for later state-law and state-procedure expansion artifacts."
+    }
+  ]
+}

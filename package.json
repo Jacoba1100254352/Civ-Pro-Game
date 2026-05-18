@@ -8,7 +8,10 @@
     "sources": "node scripts/sync-legal-sources.js --ignore-env",
     "sources:live": "node scripts/sync-legal-sources.js --live --local-output",
     "sources:live:restricted": "node scripts/sync-legal-sources.js --live --local-output --include-restricted",
-    "test": "node tests/rules.test.js && node tests/data-integrity.test.js && node tests/legal-sources.test.js && node tests/source-generator.test.js && node tests/app-contract.test.js && node tests/app-smoke.test.js",
-    "check": "node --check app.js && node --check data.js && node --check legal-sources.generated.js && node --check rules.js && node --check rule-tests.js && node --check scripts/load-env.js && node --check scripts/legal-source-config.js && node --check scripts/sync-legal-sources.js && node --check tests/rules.test.js && node --check tests/data-integrity.test.js && node --check tests/legal-sources.test.js && node --check tests/source-generator.test.js && node --check tests/app-contract.test.js && node --check tests/app-smoke.test.js"
+    "artifacts:candidates": "node scripts/ingest-game-artifacts.js",
+    "artifacts:build": "node scripts/build-reviewed-artifacts.js",
+    "artifacts:all": "npm run artifacts:candidates && npm run artifacts:build",
+    "test": "node tests/rules.test.js && node tests/data-integrity.test.js && node tests/legal-sources.test.js && node tests/source-generator.test.js && node tests/reviewed-artifacts.test.js && node tests/app-contract.test.js && node tests/app-smoke.test.js",
+    "check": "node --check app.js && node --check data.js && node --check legal-sources.generated.js && node --check game-artifacts.generated.js && node --check rules.js && node --check rule-tests.js && node --check scripts/load-env.js && node --check scripts/legal-source-config.js && node --check scripts/sync-legal-sources.js && node --check scripts/ingest-game-artifacts.js && node --check scripts/build-reviewed-artifacts.js && node --check tests/rules.test.js && node --check tests/data-integrity.test.js && node --check tests/legal-sources.test.js && node --check tests/source-generator.test.js && node --check tests/reviewed-artifacts.test.js && node --check tests/app-contract.test.js && node --check tests/app-smoke.test.js"
   }
 }

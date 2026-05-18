@@ -1,6 +1,7 @@
 import { LEGAL_SOURCE_CARDS } from "./legal-sources.generated.js";
+import { REVIEWED_CASES, REVIEWED_SOURCE_CARDS } from "./game-artifacts.generated.js";
 
-export const SOURCES = LEGAL_SOURCE_CARDS;
+export const SOURCES = [...LEGAL_SOURCE_CARDS, ...REVIEWED_SOURCE_CARDS];
 
 export const PHASES = [
   ["claim", "File Claim"],
@@ -22,7 +23,7 @@ export const TOPIC_MODULES = [
   { id: "class-actions", label: "Class actions preview", default: false, preview: true }
 ];
 
-export const CASES = [
+const CORE_CASES = [
   {
     id: "tire-failure",
     topics: ["jurisdiction", "joinder", "discovery"],
@@ -541,6 +542,8 @@ export const CASES = [
     ]
   }
 ];
+
+export const CASES = [...CORE_CASES, ...REVIEWED_CASES];
 
 export const ATTACK_CARDS = [
   {

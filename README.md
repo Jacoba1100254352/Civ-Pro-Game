@@ -48,6 +48,17 @@ That writes `data/legal-sources/live-source-manifest.local.json`, which is ignor
 
 Source coverage currently includes U.S. Courts FRCP materials, Cornell LII rule/statute pages, CourtListener, govinfo, FederalRegister.gov, eCFR, Congress.gov, Open States, and a restricted PACER/RECAP path. Direct PACER use should stay server-side and optional because it can require account credentials and may incur fees.
 
+## Reviewed Game Artifacts
+
+Live API output is never imported straight into gameplay. Use the build-time artifact pipeline:
+
+```sh
+npm run artifacts:candidates
+npm run artifacts:build
+```
+
+`artifacts:candidates` writes ignored provider candidates to `data/ingestion/provider-candidates.local.json`. Review and fictionalize useful candidates into `data/reviewed-game-artifacts.json`, then run `artifacts:build` to regenerate `game-artifacts.generated.js`. Only reviewed artifacts are compiled into the static app. Current reviewed artifacts add playable source-backed case cards plus source cards that explain which provider lanes support them.
+
 ## What Is Playable
 
 - File a case and choose the defendant.
@@ -79,6 +90,8 @@ Use `Print cards` in the app. The print view is generated from the same data mod
 
 - `data.js`: case cards, attack cards, motion/discovery cards, topic modules, sources, tutorial steps.
 - `legal-sources.generated.js`: generated browser-safe source module used by `data.js`.
+- `data/reviewed-game-artifacts.json`: human-reviewed game artifacts promoted from provider candidate lanes.
+- `game-artifacts.generated.js`: generated reviewed gameplay/source artifacts used by `data.js`.
 - `rules.js`: rule evaluation and shared helpers.
 - `app.js`: UI state, turns, rendering, hands, budget, tutorial, printing.
 - `rule-tests.js`: reusable test assertions.
