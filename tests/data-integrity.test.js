@@ -6,7 +6,7 @@ import {
   SOURCES,
   TOPIC_MODULES,
   TUTORIAL_STEPS
-} from "../data.js";
+} from "../public/data.js";
 
 const failures = [];
 

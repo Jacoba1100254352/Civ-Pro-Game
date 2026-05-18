@@ -1,4 +1,4 @@
-import { runRuleTests } from "../rule-tests.js";
+import { runRuleTests } from "../public/rule-tests.js";
 
 const result = runRuleTests();
 

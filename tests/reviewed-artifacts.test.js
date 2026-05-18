@@ -1,10 +1,10 @@
-import { CASES, SOURCES } from "../data.js";
+import { CASES, SOURCES } from "../public/data.js";
 import {
   REVIEWED_CASES,
   REVIEWED_DOCTRINE_CARDS,
   REVIEWED_GAME_ARTIFACTS,
   REVIEWED_SOURCE_CARDS
-} from "../game-artifacts.generated.js";
+} from "../public/game-artifacts.generated.js";
 import { validateReviewedArtifacts } from "../scripts/build-reviewed-artifacts.js";
 
 const failures = [];

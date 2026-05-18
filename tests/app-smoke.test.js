@@ -76,7 +76,7 @@ global.document = {
   }
 };
 
-await import("../app.js");
+await import("../public/app.js");
 
 expect(elements.get("player-one-score")?.textContent === "0", "Initial render should set player one score.");
 expect(elements.get("player-two-score")?.textContent === "0", "Initial render should set player two score.");

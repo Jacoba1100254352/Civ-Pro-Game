@@ -431,7 +431,7 @@ export function writeImportManifest(cacheDir, manifest, generatedAt) {
 }
 
 export function getPacerCacheDir(env) {
-  const sourceCacheDir = path.resolve(env.LEGAL_SOURCE_CACHE_DIR || "data/legal-sources");
+  const sourceCacheDir = path.resolve(env.LEGAL_PRIVATE_CACHE_DIR || "ops/legal-sources/cache");
   return path.join(sourceCacheDir, SECURE_PACER_DIRECT_CONFIG.cacheSubdir);
 }
 

@@ -4,7 +4,7 @@
 
 ## Run
 
-Because the app is now split into browser modules, run it from a local server:
+Because the app is split into browser modules, run it from the explicit public web root:
 
 ```sh
 npm run serve
@@ -32,7 +32,7 @@ npm run sources
 That command writes:
 
 - `data/legal-sources/source-manifest.json`: provider registry, doctrine source links, and live-probe configuration.
-- `legal-sources.generated.js`: browser-safe source cards used by the in-game Rule Judge.
+- `public/legal-sources.generated.js`: browser-safe source cards used by the in-game Rule Judge.
 
 `npm run sources` intentionally ignores local credentials so the checked-in catalog stays stable and safe to commit.
 
@@ -44,7 +44,7 @@ npm run sources:live
 
 That writes `data/legal-sources/live-source-manifest.local.json`, which is ignored by git. Use `npm run sources:live:restricted` to include restricted account checks such as PACER credential presence. Direct PACER network access is not performed by the public source refresh path.
 
-`.env` is local-only and ignored by git. `.env.example` is the tracked template. Current placeholders are `GOVINFO_API_KEY`, `COURTLISTENER_API_TOKEN`, `CONGRESS_API_KEY`, `OPENSTATES_API_KEY`, `PACER_USERNAME`, `PACER_PASSWORD`, `PACER_CLIENT_CODE`, `PACER_OTP_CODE`, `PACER_REDACT_FLAG`, `PACER_DIRECT_ENABLED`, `PACER_DIRECT_ENV`, and `PACER_DIRECT_ALLOW_PRODUCTION`.
+`.env` is local-only and ignored by git. `.env.example` is the tracked template. Current placeholders are `GOVINFO_API_KEY`, `COURTLISTENER_API_TOKEN`, `CONGRESS_API_KEY`, `OPENSTATES_API_KEY`, `PACER_USERNAME`, `PACER_PASSWORD`, `PACER_CLIENT_CODE`, `PACER_OTP_CODE`, `PACER_REDACT_FLAG`, `PACER_DIRECT_ENABLED`, `PACER_DIRECT_ENV`, `PACER_DIRECT_ALLOW_PRODUCTION`, `LEGAL_SOURCE_CACHE_DIR`, and `LEGAL_PRIVATE_CACHE_DIR`.
 
 Source coverage currently includes U.S. Courts FRCP materials, Cornell LII rule/statute pages, CourtListener, govinfo, FederalRegister.gov, eCFR, Congress.gov, Open States, and a restricted PACER/RECAP path. CourtListener/RECAP remains the default path for docket and opinion material. Direct PACER use must stay server-side and optional because it can require account credentials and may incur fees.
 
@@ -56,14 +56,14 @@ Direct PACER access is import-only. It is not used by the browser app, `npm run 
 npm run pacer:import:dry-run
 ```
 
-The dry run reads `data/pacer/pacer-import-allowlist.json`, makes no PACER requests, and writes an ignored manifest under `data/legal-sources/pacer-direct/`. Actual direct access requires all of these:
+The dry run reads `ops/legal-sources/pacer-import-allowlist.json`, makes no PACER requests, and writes an ignored manifest under `ops/legal-sources/cache/pacer-direct/`. Actual direct access requires all of these:
 
 - A specific allowlist entry with `enabled: true`, `reviewed: true`, and exact `caseNumberFull` criteria.
 - Local `.env` credentials: `PACER_USERNAME` and `PACER_PASSWORD`; optionally `PACER_CLIENT_CODE`, `PACER_OTP_CODE`, and `PACER_REDACT_FLAG`.
 - `PACER_DIRECT_ENABLED=true`.
 - The explicit operator command `npm run pacer:import`.
 
-Production access has an additional guard: set `PACER_DIRECT_ENV=production` and `PACER_DIRECT_ALLOW_PRODUCTION=true`. The default is `PACER_DIRECT_ENV=qa`. Cached PACER artifacts are written only under the ignored `data/legal-sources/pacer-direct/` directory, include provenance and retrieval timestamps, and redact credential/token/account fields.
+Production access has an additional guard: set `PACER_DIRECT_ENV=production` and `PACER_DIRECT_ALLOW_PRODUCTION=true`. The default is `PACER_DIRECT_ENV=qa`. Cached PACER artifacts are written only under the ignored `ops/legal-sources/cache/pacer-direct/` directory, include provenance and retrieval timestamps, and redact credential/token/account fields.
 
 ## Reviewed Game Artifacts
 
@@ -74,7 +74,7 @@ npm run artifacts:candidates
 npm run artifacts:build
 ```
 
-`artifacts:candidates` writes ignored provider candidates to `data/ingestion/provider-candidates.local.json`. Review and fictionalize useful candidates into `data/reviewed-game-artifacts.json`, then run `artifacts:build` to regenerate `game-artifacts.generated.js`. Only reviewed artifacts are compiled into the static app. Current reviewed artifacts add playable source-backed case cards plus source cards that explain which provider lanes support them.
+`artifacts:candidates` writes ignored provider candidates to `ops/legal-sources/provider-candidates.local.json`. Review and fictionalize useful candidates into `data/reviewed-game-artifacts.json`, then run `artifacts:build` to regenerate `public/game-artifacts.generated.js`. Only reviewed artifacts are compiled into the static app. Current reviewed artifacts add playable source-backed case cards plus source cards that explain which provider lanes support them.
 
 ## What Is Playable
 
@@ -105,16 +105,18 @@ Use `Print cards` in the app. The print view is generated from the same data mod
 
 ## File Structure
 
-- `data.js`: case cards, attack cards, motion/discovery cards, topic modules, sources, tutorial steps.
-- `legal-sources.generated.js`: generated browser-safe source module used by `data.js`.
+- `public/`: static web root served by `npm run serve`.
+- `public/data.js`: case cards, attack cards, motion/discovery cards, topic modules, sources, tutorial steps.
+- `public/legal-sources.generated.js`: generated browser-safe source module used by `data.js`.
 - `data/reviewed-game-artifacts.json`: human-reviewed game artifacts promoted from provider candidate lanes.
-- `game-artifacts.generated.js`: generated reviewed gameplay/source artifacts used by `data.js`.
-- `rules.js`: rule evaluation and shared helpers.
-- `app.js`: UI state, turns, rendering, hands, budget, tutorial, printing.
-- `rule-tests.js`: reusable test assertions.
-- `scripts/`: legal-source configuration, env loading, and source-manifest generation.
+- `ops/legal-sources/`: operator-reviewed allowlists and ignored server-side source-ingestion output; not part of the public web root.
+- `public/game-artifacts.generated.js`: generated reviewed gameplay/source artifacts used by `data.js`.
+- `public/rules.js`: rule evaluation and shared helpers.
+- `public/app.js`: UI state, turns, rendering, hands, budget, tutorial, printing.
+- `public/rule-tests.js`: reusable test assertions.
+- `scripts/`: legal-source configuration, env loading, private ingestion, and source-manifest generation.
 - `tests/`: Node test runners for doctrine logic and source ingestion.
-- `styles.css`: game UI and print-card styling.
+- `public/styles.css`: game UI and print-card styling.
 
 ## Doctrine Boundary
 

@@ -4,7 +4,7 @@ import { pathToFileURL } from "node:url";
 import { hasValue, mergedEnv } from "./load-env.js";
 import { buildRequest, redactHeaders, redactUrl } from "./sync-legal-sources.js";
 
-const outputPath = path.resolve("data/ingestion/provider-candidates.local.json");
+const outputPath = path.resolve("ops/legal-sources/provider-candidates.local.json");
 
 const COURTLISTENER_QUERIES = [
   {

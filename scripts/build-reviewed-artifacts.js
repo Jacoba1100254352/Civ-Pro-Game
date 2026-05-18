@@ -3,7 +3,7 @@ import path from "node:path";
 import { pathToFileURL } from "node:url";
 
 const inputPath = path.resolve("data/reviewed-game-artifacts.json");
-const outputPath = path.resolve("game-artifacts.generated.js");
+const outputPath = path.resolve("public/game-artifacts.generated.js");
 
 if (process.argv[1] && import.meta.url === pathToFileURL(process.argv[1]).href) {
   main();

@@ -5,7 +5,7 @@ export const SECURE_PACER_DIRECT_CONFIG = Object.freeze({
   environmentEnvKey: "PACER_DIRECT_ENV",
   productionEnvKey: "PACER_DIRECT_ALLOW_PRODUCTION",
   requiredExecuteFlag: "--execute",
-  allowlistPath: "data/pacer/pacer-import-allowlist.json",
+  allowlistPath: "ops/legal-sources/pacer-import-allowlist.json",
   cacheSubdir: "pacer-direct",
   defaultEnvironment: "qa",
   maxAllowlistEntriesPerRun: 5,

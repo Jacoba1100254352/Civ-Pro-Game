@@ -1,4 +1,4 @@
-import { LEGAL_SOURCE_CARDS, LEGAL_SOURCE_MANIFEST } from "../legal-sources.generated.js";
+import { LEGAL_SOURCE_CARDS, LEGAL_SOURCE_MANIFEST } from "../public/legal-sources.generated.js";
 
 const failures = [];
 

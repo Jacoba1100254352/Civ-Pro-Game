@@ -6,6 +6,7 @@ import {
   buildAuthRequest,
   buildImportManifest,
   buildPclCaseSearchRequest,
+  getPacerCacheDir,
   getReviewedAllowlistEntries,
   loadAllowlist,
   normalizeEnvironment,
@@ -26,12 +27,14 @@ const fakeEnv = {
   PACER_CLIENT_CODE: "fake-client-code-secret",
   PACER_OTP_CODE: "123456",
   PACER_REDACT_FLAG: "1",
-  LEGAL_SOURCE_CACHE_DIR: fs.mkdtempSync(path.join(os.tmpdir(), "civ-pro-pacer-cache-"))
+  LEGAL_PRIVATE_CACHE_DIR: fs.mkdtempSync(path.join(os.tmpdir(), "civ-pro-pacer-cache-"))
 };
 
 expect(SECURE_PACER_DIRECT_CONFIG.enabledByDefault === false, "Direct PACER config should be disabled by default.");
 expect(SECURE_PACER_DIRECT_CONFIG.frontendSafe === false, "Direct PACER config should be marked unsafe for frontend use.");
 expect(SECURE_PACER_DIRECT_CONFIG.defaultEnvironment === "qa", "Direct PACER imports should default to QA.");
+expect(SECURE_PACER_DIRECT_CONFIG.allowlistPath.startsWith("ops/legal-sources/"), "PACER allowlist should live outside the public static tree.");
+expect(getPacerCacheDir({}).endsWith("ops/legal-sources/cache/pacer-direct"), "PACER cache should default outside the public static tree.");
 expect(normalizeEnvironment("QA") === "qa", "PACER environment normalization should accept QA casing.");
 
 const tmpDir = fs.mkdtempSync(path.join(os.tmpdir(), "civ-pro-pacer-allowlist-"));
@@ -178,7 +181,7 @@ const manifest = buildImportManifest({
   allowlistPath,
   entries,
   generatedAt: "2026-05-17T12:00:00.000Z",
-  cachedArtifacts: [{ entryId: "reviewed-example", kind: "pcl-case-search", httpStatus: 200, artifactPath: path.join(fakeEnv.LEGAL_SOURCE_CACHE_DIR, "artifact.json") }],
+  cachedArtifacts: [{ entryId: "reviewed-example", kind: "pcl-case-search", httpStatus: 200, artifactPath: path.join(fakeEnv.LEGAL_PRIVATE_CACHE_DIR, "artifact.json") }],
   networkRequestsMade: 1
 });
 expect(manifest.safeguards.some((item) => item.includes("CourtListener/RECAP")), "PACER manifest should preserve CourtListener/RECAP as the default path.");
@@ -195,7 +198,7 @@ const executeResult = await runPacerDirectImport({
   env: {
     ...fakeEnv,
     PACER_DIRECT_ENABLED: "true",
-    LEGAL_SOURCE_CACHE_DIR: executeCacheDir
+    LEGAL_PRIVATE_CACHE_DIR: executeCacheDir
   },
   now: () => executeTimes.shift() || new Date("2026-05-17T13:00:02.000Z"),
   fetchImpl: async (url, options) => {
@@ -264,8 +267,13 @@ const packageJson = JSON.parse(fs.readFileSync("package.json", "utf8"));
 for (const scriptName of ["sources", "sources:live", "sources:live:restricted", "artifacts:candidates", "artifacts:all"]) {
   expect(!packageJson.scripts[scriptName].includes("pacer-direct-import"), `${scriptName} should not invoke direct PACER import.`);
 }
+expect(packageJson.scripts.serve.includes("--directory public"), "Local dev server should serve only the public static tree.");
 
-for (const filePath of ["index.html", "app.js", "data.js", "legal-sources.generated.js", "game-artifacts.generated.js"]) {
+const ingestionScript = fs.readFileSync("scripts/ingest-game-artifacts.js", "utf8");
+expect(ingestionScript.includes("ops/legal-sources/provider-candidates.local.json"), "Provider candidate output should live outside the public static tree.");
+expect(!ingestionScript.includes("data/ingestion/provider-candidates.local.json"), "Provider candidate output should not target the old static-tree path.");
+
+for (const filePath of ["public/index.html", "public/app.js", "public/data.js", "public/legal-sources.generated.js", "public/game-artifacts.generated.js"]) {
   const text = fs.readFileSync(filePath, "utf8");
   expect(!text.includes("pacer-direct-import"), `${filePath} should not import direct PACER code.`);
   expect(!text.includes("pcl-public-api/rest"), `${filePath} should not contain PACER PCL direct endpoints.`);

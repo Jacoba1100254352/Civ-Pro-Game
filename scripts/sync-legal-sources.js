@@ -23,7 +23,7 @@ export async function main(argv = process.argv.slice(2), runtimeEnv = null) {
   const manifestPath = localOutput
     ? path.join(outputDir, "live-source-manifest.local.json")
     : path.join(outputDir, "source-manifest.json");
-  const generatedModulePath = localOutput ? null : path.resolve("legal-sources.generated.js");
+  const generatedModulePath = localOutput ? null : path.resolve("public/legal-sources.generated.js");
   const manifest = await buildManifest({ env, live, includeRestricted });
 
   writeOutputs(manifest, { outputDir, manifestPath, generatedModulePath });

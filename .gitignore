@@ -126,6 +126,6 @@ Temporary Items
 
 # Optional live fetch cache produced by legal-source imports.
 data/legal-sources/cache/
-data/legal-sources/pacer-direct/
 data/legal-sources/*.local.json
-data/ingestion/*.local.json
+ops/legal-sources/cache/
+ops/legal-sources/*.local.json
