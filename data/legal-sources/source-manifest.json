@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "generatedAt": "2026-05-16T22:11:14.621Z",
+  "generatedAt": "2026-05-18T01:44:07.307Z",
   "live": false,
   "includeRestricted": false,
   "outputMode": "catalog",
@@ -142,7 +142,7 @@
         "PACER_USERNAME",
         "PACER_PASSWORD"
       ],
-      "gameUse": "Optional direct docket access. Prefer CourtListener/RECAP first because direct PACER can be credentialed and fee-bearing.",
+      "gameUse": "Optional server-side direct import path. Prefer CourtListener/RECAP first because direct PACER can be credentialed and fee-bearing.",
       "configured": false,
       "missingEnv": [
         "PACER_USERNAME",
@@ -618,7 +618,7 @@
     {
       "label": "PACER / RECAP source path",
       "href": "https://pacer.uscourts.gov/",
-      "note": "Optional direct docket access. Prefer CourtListener/RECAP first because direct PACER can be credentialed and fee-bearing. Needs PACER_USERNAME, PACER_PASSWORD."
+      "note": "Optional server-side direct import path. Prefer CourtListener/RECAP first because direct PACER can be credentialed and fee-bearing. Needs PACER_USERNAME, PACER_PASSWORD."
     }
   ]
 }

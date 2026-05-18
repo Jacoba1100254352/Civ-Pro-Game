@@ -1,0 +1,20 @@
+{
+  "schemaVersion": 1,
+  "reviewedAt": null,
+  "reviewedBy": "",
+  "notes": "Only entries with enabled=true and reviewed=true are eligible for direct PACER import. Keep this allowlist limited to specific docket/case identifiers.",
+  "entries": [
+    {
+      "id": "example-disabled-pcl-case-search",
+      "enabled": false,
+      "reviewed": false,
+      "kind": "pcl-case-search",
+      "description": "Disabled example. Replace with an operator-reviewed case search before running a direct PACER import.",
+      "criteria": {
+        "caseNumberFull": "",
+        "courtId": ""
+      },
+      "intendedUse": "metadata-only"
+    }
+  ]
+}

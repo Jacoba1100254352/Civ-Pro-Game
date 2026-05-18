@@ -42,11 +42,28 @@ To probe live APIs and public endpoints, copy `.env.example` to `.env`, add real
 npm run sources:live
 ```
 
-That writes `data/legal-sources/live-source-manifest.local.json`, which is ignored by git. Use `npm run sources:live:restricted` to include restricted account checks such as PACER credential presence. Direct PACER network access is not performed by this prototype.
+That writes `data/legal-sources/live-source-manifest.local.json`, which is ignored by git. Use `npm run sources:live:restricted` to include restricted account checks such as PACER credential presence. Direct PACER network access is not performed by the public source refresh path.
 
-`.env` is local-only and ignored by git. `.env.example` is the tracked template. Current placeholders are `GOVINFO_API_KEY`, `COURTLISTENER_API_TOKEN`, `CONGRESS_API_KEY`, `OPENSTATES_API_KEY`, `PACER_USERNAME`, and `PACER_PASSWORD`.
+`.env` is local-only and ignored by git. `.env.example` is the tracked template. Current placeholders are `GOVINFO_API_KEY`, `COURTLISTENER_API_TOKEN`, `CONGRESS_API_KEY`, `OPENSTATES_API_KEY`, `PACER_USERNAME`, `PACER_PASSWORD`, `PACER_CLIENT_CODE`, `PACER_OTP_CODE`, `PACER_REDACT_FLAG`, `PACER_DIRECT_ENABLED`, `PACER_DIRECT_ENV`, and `PACER_DIRECT_ALLOW_PRODUCTION`.
 
-Source coverage currently includes U.S. Courts FRCP materials, Cornell LII rule/statute pages, CourtListener, govinfo, FederalRegister.gov, eCFR, Congress.gov, Open States, and a restricted PACER/RECAP path. Direct PACER use should stay server-side and optional because it can require account credentials and may incur fees.
+Source coverage currently includes U.S. Courts FRCP materials, Cornell LII rule/statute pages, CourtListener, govinfo, FederalRegister.gov, eCFR, Congress.gov, Open States, and a restricted PACER/RECAP path. CourtListener/RECAP remains the default path for docket and opinion material. Direct PACER use must stay server-side and optional because it can require account credentials and may incur fees.
+
+## Direct PACER Imports
+
+Direct PACER access is import-only. It is not used by the browser app, `npm run sources`, `npm run sources:live`, `npm run sources:live:restricted`, or the reviewed-artifact build. The guarded entrypoint is:
+
+```sh
+npm run pacer:import:dry-run
+```
+
+The dry run reads `data/pacer/pacer-import-allowlist.json`, makes no PACER requests, and writes an ignored manifest under `data/legal-sources/pacer-direct/`. Actual direct access requires all of these:
+
+- A specific allowlist entry with `enabled: true`, `reviewed: true`, and exact `caseNumberFull` criteria.
+- Local `.env` credentials: `PACER_USERNAME` and `PACER_PASSWORD`; optionally `PACER_CLIENT_CODE`, `PACER_OTP_CODE`, and `PACER_REDACT_FLAG`.
+- `PACER_DIRECT_ENABLED=true`.
+- The explicit operator command `npm run pacer:import`.
+
+Production access has an additional guard: set `PACER_DIRECT_ENV=production` and `PACER_DIRECT_ALLOW_PRODUCTION=true`. The default is `PACER_DIRECT_ENV=qa`. Cached PACER artifacts are written only under the ignored `data/legal-sources/pacer-direct/` directory, include provenance and retrieval timestamps, and redact credential/token/account fields.
 
 ## Reviewed Game Artifacts
 

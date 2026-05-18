@@ -102,7 +102,7 @@ export const SOURCE_PROVIDERS = [
     type: "restricted-api",
     href: "https://pacer.uscourts.gov/",
     envKeys: ["PACER_USERNAME", "PACER_PASSWORD"],
-    gameUse: "Optional direct docket access. Prefer CourtListener/RECAP first because direct PACER can be credentialed and fee-bearing."
+    gameUse: "Optional server-side direct import path. Prefer CourtListener/RECAP first because direct PACER can be credentialed and fee-bearing."
   }
 ];
 
